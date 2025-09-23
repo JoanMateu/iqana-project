@@ -1,0 +1,1 @@
+Frontend - developed with react (Vite + TS) sgiw holdings

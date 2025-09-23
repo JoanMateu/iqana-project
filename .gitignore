@@ -1,0 +1,16 @@
+#Backend
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+ENV/
+env/
+*.env
+.env.*
+
+#FrontEnd
+*.local
+.vscode/
+.idea/
+*.swp
+node_modules/
