@@ -1,34 +1,35 @@
-import React, { useState } from "react";
-import type { Holding } from "../types";
+import React, { useState, useEffect } from "react";
+import type { Holding, HoldingsResponse } from "../types";
 import RefreshButton from "./RefreshButton";
+import { getHoldings } from "../api";
 
-const MOCK: Holding[] = [
-  { id: 1, name: "Bitcoin",  symbol: "BTC", amount: 0.245, value: 6500, percentage: 52.1 },
-  { id: 2, name: "Ethereum", symbol: "ETH", amount: 2.1,   value: 3900, percentage: 31.2 },
-  { id: 3, name: "Solana",   symbol: "SOL", amount: 15,    value: 2080, percentage: 16.7 },
-];
 
 export default function HoldingsTable() {
-  const [data, setData] = useState<ReadonlyArray<Holding>>(MOCK);
+  const [data, setData] = useState<HoldingsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [err, setErr] = useState<string | null>(null);
 
   async function handleRefresh() {
     try {
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 700));
-
-      setData((prev) =>
-        prev.map((h) => ({
-          ...h,
-          value: h.value + Math.round(Math.random() * 50 - 25),
-        }))
-      );
+      setErr(null);
+      const resp = await getHoldings("live");
+      setData(resp);
       setLastUpdated(new Date());
+    } catch (e: any) {
+      setErr(e.message);
     } finally {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    // Al cargar, intenta mostrar cache o mock
+    handleRefresh();
+  }, []);
+
+  const ts = data?.timestamp ? new Date(data.timestamp * 1000).toLocaleString() : "-";
 
   return (
     <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center">
@@ -43,12 +44,15 @@ export default function HoldingsTable() {
             <div className="flex items-center gap-3">
               {lastUpdated && (
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  Updated: {lastUpdated.toLocaleTimeString()}
+                  Updated: {lastUpdated.toLocaleTimeString()} (source: {data?.source})
                 </span>
               )}
               <RefreshButton onClick={handleRefresh} loading={loading} />
             </div>
           </div>
+
+          {/* Error */}
+          {err && <div className="px-4 py-2 text-red-600 text-sm">Error: {err}</div>}
 
           {/* Table */}
           <div className="overflow-x-auto">
@@ -57,36 +61,33 @@ export default function HoldingsTable() {
                 <tr>
                   <th className="px-4 py-3">Asset</th>
                   <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Value ($)</th>
-                  <th className="px-4 py-3">% Portfolio</th>
                 </tr>
               </thead>
               <tbody>
-                {data.map((h) => (
+                {(data?.data ?? []).map((h: Holding) => (
                   <tr
-                    key={h.id}
+                    key={h.asset}
                     className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/60"
                   >
                     <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
-                      {h.name}{" "}
-                      <span className="text-gray-500 dark:text-gray-300">
-                        ({h.symbol})
-                      </span>
+                      {h.asset}
                     </td>
                     <td className="px-4 py-3">{h.amount}</td>
-                    <td className="px-4 py-3">
-                      ${h.value.toLocaleString()}
-                    </td>
-                    <td className="px-4 py-3">{h.percentage}%</td>
                   </tr>
                 ))}
+                {(!data || data.data.length === 0) && !loading && (
+                  <tr>
+                    <td colSpan={2} className="px-4 py-3 text-gray-500 text-center">
+                      No data
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
 
-          
           <div className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
-            footer
+            {ts !== "-" ? `Last update: ${ts}` : "No updates yet"}
           </div>
         </div>
       </div>
