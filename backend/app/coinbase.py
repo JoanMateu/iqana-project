@@ -1,6 +1,6 @@
 from decimal import Decimal
 from .schemas import Holding
-from app import schemas
+from app import schemas, cache
 import time
 from coinbase.rest import RESTClient
 from app.settings import config
@@ -22,17 +22,34 @@ def fetch_holdings_mock() -> schemas.HoldingsResponse:
 
 
 def fetch_holdings_coinbase() -> schemas.HoldingsResponse:
-    accounts = client.get_accounts()
-    holdings = []
+    try:
+        accounts = client.get_accounts()
+        holdings = []
 
-    for acc in accounts["accounts"]:
-        balance = Decimal(acc["available_balance"]["value"])
-        if balance > 0:
-            currency = acc["available_balance"]["currency"]
-            holdings.append(schemas.Holding(asset=currency, amount=balance))
+        for acc in accounts["accounts"]:
+            balance_info = acc.get("available_balance")
+            if not balance_info:
+                continue
 
-    return schemas.HoldingsResponse(
-        source="live",
-        data=holdings,
-        timestamp=int(time.time())
-    )
+            try:
+                balance = Decimal(balance_info["value"])
+                currency = balance_info["currency"]
+            except (KeyError, ValueError):
+                continue
+
+            if balance > 0:
+                holdings.append(schemas.Holding(asset=currency, amount=balance))
+
+        result = schemas.HoldingsResponse(
+            source="live",
+            data=holdings,
+            timestamp=int(time.time())
+        )
+
+        return result
+    
+    except Exception as e:
+        cached = cache.get_cached_holdings()
+        if cached:
+            return cached
+        raise
