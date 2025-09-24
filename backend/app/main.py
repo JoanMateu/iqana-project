@@ -42,5 +42,9 @@ def get_holdings(source: str = "mock"):
             data=[],
             timestamp=None
         )
+    elif source == "live":
+        holdings = coinbase.fetch_holdings_coinbase()
+        cache.set_cache_holdings(holdings)
+        return holdings
     else:
         raise ValueError("Unsupported source")
