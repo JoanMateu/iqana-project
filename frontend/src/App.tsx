@@ -1,11 +1,11 @@
+import HoldingsTable from "./components/HoldingsTable";
 
 function App() {
-
   return (
     <>
-      <h1>Iqana</h1>
+      <HoldingsTable />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
