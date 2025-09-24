@@ -1,9 +1,9 @@
 import time 
 from typing import Optional, Dict, Any, List
+from app import schemas
+from app.settings import config
 
-_CACHE: Dict[str, Any] = {}
-_TTL_SECONDS = 60  # Cache Time-To-Live in seconds
-
+_CACHE: dict[str, tuple[schemas.HoldingsResponse, int]] = {}
 
 
 #### eg:
@@ -16,14 +16,18 @@ _TTL_SECONDS = 60  # Cache Time-To-Live in seconds
 ###
 
 
-def get_cached_holdings() -> Optional[dict]:
-    entry = _CACHE.get("holdings")
-    if entry and (time.time() - entry["timestamp"] < _TTL_SECONDS):
-        return entry
-    return None
+def get_cached_holdings() -> Optional[schemas.HoldingsResponse]:
+    if "holdings" not in _CACHE:
+        return None
 
-def set_cached_holdings(data: List[dict]) -> None:
-    _CACHE["holdings"] = {
-        "data": data,
-        "timestamp": int(time.time())
-    }
+    data, saved_at = _CACHE["holdings"]
+    age = int(time.time()) - saved_at
+
+    if age > config.CACHE_TTL_SECONDS:
+        _CACHE.pop("holdings", None)
+        return None
+
+    return data
+
+def set_cache_holdings(data: schemas.HoldingsResponse) -> None:
+    _CACHE["holdings"] = (data, int(time.time()))
