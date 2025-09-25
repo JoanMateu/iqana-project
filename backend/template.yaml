@@ -9,17 +9,27 @@ Globals:
     MemorySize: 256
     Architectures: [arm64]
 
+Parameters:
+  CoinbaseSecretName:
+    Type: String
+    Default: coinbase/creds
+    Description: "Secrets Manager name for Coinbase API credentials (JSON keys: COINBASE_API_KEY, COINBASE_API_SECRET)"
+
 Resources:
   ApiFunction:
-    Type: AWS::Serverless::Function #  
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
       Handler: app.main.handler
       Policies:
         - AWSLambdaBasicExecutionRole
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${CoinbaseSecretName}*
       Environment:
         Variables:
           BACKEND_CORS_ORIGINS: '["http://localhost:5173"]'
+          COINBASE_API_KEY: !Sub "{{resolve:secretsmanager:${CoinbaseSecretName}:SecretString:COINBASE_API_KEY}}"
+          COINBASE_API_SECRET: !Sub "{{resolve:secretsmanager:${CoinbaseSecretName}:SecretString:COINBASE_API_SECRET}}"
       Events:
         RootAny:
           Type: HttpApi

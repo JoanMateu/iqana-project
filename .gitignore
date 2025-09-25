@@ -8,6 +8,10 @@ env/
 *.env
 .env.*
 
+#sam
+.aws-sam/
+.aws-sam 
+
 #FrontEnd
 *.local
 .vscode/
