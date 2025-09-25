@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
 from app import schemas
 from app import cache
@@ -48,3 +49,7 @@ def get_holdings(source: str = "mock"):
         return holdings
     else:
         raise ValueError("Unsupported source")
+    
+
+
+handler = Mangum(app)

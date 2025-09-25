@@ -27,7 +27,7 @@ def fetch_holdings_coinbase() -> schemas.HoldingsResponse:
         holdings = []
 
         for acc in accounts["accounts"]:
-            balance_info = acc.get("available_balance")
+            balance_info = acc["available_balance"]
             if not balance_info:
                 continue
 

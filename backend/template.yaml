@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Iqana Holdings API (FastAPI on Lambda behind HTTP API Gateway)
+
+Globals:
+  Function:
+    Runtime: python3.13
+    Timeout: 15
+    MemorySize: 256
+    Architectures: [arm64]
+
+Resources:
+  ApiFunction:
+    Type: AWS::Serverless::Function #  
+    Properties:
+      CodeUri: .
+      Handler: app.main.handler
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          BACKEND_CORS_ORIGINS: '["http://localhost:5173"]'
+      Events:
+        RootAny:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: ANY
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description: Base URL of the HTTP API
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
