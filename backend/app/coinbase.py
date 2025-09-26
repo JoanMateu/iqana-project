@@ -17,12 +17,22 @@ def fetch_holdings_mock() -> schemas.HoldingsResponse:
     return schemas.HoldingsResponse(
             source="mock",
             data=holdings,
-            timestamp=int(time.time())
+            timestamp=int(time.time()),
+            username="mock_user"
         )
 
 
 def fetch_holdings_coinbase() -> schemas.HoldingsResponse:
     try:
+
+        user_info = client.get("/v2/user") 
+        username = None
+        try:
+            username = user_info["data"].get("name") or user_info["data"].get("username") or user_info["data"].get("email")
+        except Exception:
+            username = None
+
+
         accounts = client.get_accounts()
         holdings = []
 
@@ -43,7 +53,8 @@ def fetch_holdings_coinbase() -> schemas.HoldingsResponse:
         result = schemas.HoldingsResponse(
             source="live",
             data=holdings,
-            timestamp=int(time.time())
+            timestamp=int(time.time()),
+            username=username
         )
 
         return result

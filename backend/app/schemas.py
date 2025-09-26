@@ -10,3 +10,4 @@ class HoldingsResponse(BaseModel):
     source: Literal["mock", "cache", "live"]
     data: List[Holding]
     timestamp: Optional[int] = None
+    username: Optional[str] = None
