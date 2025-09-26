@@ -27,7 +27,7 @@ Resources:
             SecretArn: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${CoinbaseSecretName}*
       Environment:
         Variables:
-          BACKEND_CORS_ORIGINS: "http://localhost:5173,https://d2u5ie2k7r9a0g.cloudfront.net/"
+          BACKEND_CORS_ORIGINS: "http://localhost:5173,https://d2u5ie2k7r9a0g.cloudfront.net"
           COINBASE_API_KEY: !Sub "{{resolve:secretsmanager:${CoinbaseSecretName}:SecretString:COINBASE_API_KEY}}"
           COINBASE_API_SECRET: !Sub "{{resolve:secretsmanager:${CoinbaseSecretName}:SecretString:COINBASE_API_SECRET}}"
       Events:
