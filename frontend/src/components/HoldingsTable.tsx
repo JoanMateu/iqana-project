@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { Holding, HoldingsResponse } from "../types";
 import RefreshButton from "./RefreshButton";
 import { getHoldings } from "../api";

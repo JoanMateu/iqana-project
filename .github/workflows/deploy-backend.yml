@@ -52,6 +52,7 @@ jobs:
             --region eu-west-3 \
             --no-fail-on-empty-changeset \
             --capabilities CAPABILITY_IAM 
+            
       - name: Show API URL
         run: |
           aws cloudformation describe-stacks \
