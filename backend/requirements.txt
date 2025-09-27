@@ -5,3 +5,4 @@ requests==2.32.3
 python-dotenv==1.1.1
 coinbase-advanced-py
 mangum==0.19.0
+pytest==8.4.2
