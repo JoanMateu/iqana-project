@@ -31,6 +31,11 @@ export default function HoldingsTable() {
     ? new Date(data.timestamp * 1000).toLocaleString()
     : "-";
 
+  const totalValue = (data?.data ?? []).reduce(
+  (sum, h) => sum + (h.value_eur || 0),
+  0
+  );
+
   return (
     <section className="min-h-screen bg-[#FFFFFF] flex items-center">
       <div className="mx-auto w-11/12 max-w-4xl">
@@ -65,6 +70,7 @@ export default function HoldingsTable() {
                 <tr>
                   <th className="px-4 py-3 font-semibold">Asset</th>
                   <th className="px-4 py-3 font-semibold text-right">Amount</th>
+                  <th className="px-4 py-3 font-semibold text-right">Value (€)</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,16 +81,17 @@ export default function HoldingsTable() {
                       idx % 2 === 0 ? "bg-white" : "bg-[#F9F9F9]"
                     } border-b border-gray-200 hover:bg-[#F2FDF5]`}
                   >
-                    <td className="px-4 py-3 font-medium text-gray-900">
-                      {h.asset}
-                    </td>
+                    <td className="px-4 py-3 font-medium text-gray-900">{h.asset}</td>
                     <td className="px-4 py-3 text-right">{h.amount}</td>
+                    <td className="px-4 py-3 text-right">
+                      {h.value_eur ? `${h.value_eur.toFixed(2)} €` : "-"}
+                    </td>
                   </tr>
                 ))}
                 {(!data || data.data.length === 0) && !loading && (
                   <tr>
                     <td
-                      colSpan={2}
+                      colSpan={3}
                       className="px-4 py-3 text-gray-500 text-center bg-[#F9F9F9]"
                     >
                       No data
@@ -92,6 +99,19 @@ export default function HoldingsTable() {
                   </tr>
                 )}
               </tbody>
+
+              {data?.data && data.data.length > 0 && (
+                <tfoot>
+                  <tr className="bg-[#F8F8F8] font-semibold border-t border-gray-200">
+                    <td className="px-4 py-3" colSpan={2}>
+                      Total
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {totalValue.toFixed(2)} €
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
 
