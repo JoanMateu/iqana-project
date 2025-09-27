@@ -14,9 +14,15 @@ from app.settings import config
 
 load_dotenv() 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(level=LOG_LEVEL)
-logger = logging.getLogger("iqana")
+level = getattr(logging, LOG_LEVEL, logging.INFO)
 
+root = logging.getLogger()
+root.setLevel(level)
+for h in root.handlers:
+    h.setLevel(level)
+
+logger = logging.getLogger("iqana")
+logger.propagate = True  
 app = FastAPI(title=config.PROJECT_NAME)
 
 
@@ -66,6 +72,7 @@ async def log_requests(request: Request, call_next):
 @app.get("/health")
 def health():
     log_info("health_ok")
+    print("Health check OK")
     return {"status": "ok"}
 
 
