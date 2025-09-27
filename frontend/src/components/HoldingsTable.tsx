@@ -32,8 +32,8 @@ export default function HoldingsTable() {
     : "-";
 
   const totalValue = (data?.data ?? []).reduce(
-  (sum, h) => sum + (h.value_eur || 0),
-  0
+    (sum, h) => sum + (Number(h.value_eur) || 0),
+    0
   );
 
   return (
@@ -81,10 +81,10 @@ export default function HoldingsTable() {
                       idx % 2 === 0 ? "bg-white" : "bg-[#F9F9F9]"
                     } border-b border-gray-200 hover:bg-[#F2FDF5]`}
                   >
-                    <td className="px-4 py-3 font-medium text-gray-900">{h.asset}</td>
-                    <td className="px-4 py-3 text-right">{h.amount}</td>
-                    <td className="px-4 py-3 text-right">
-                      {h.value_eur ? `${h.value_eur.toFixed(2)} €` : "-"}
+                    <td className="px-4 py-3 font-medium text-gray-900 ">{h.asset}</td>
+                    <td className="px-4 py-3 text-right ">{h.amount}</td>
+                    <td className="px-4 py-3 text-right ">
+                      {h.value_eur ? `${Number(h.value_eur).toFixed(2)} €` : "-"}
                     </td>
                   </tr>
                 ))}

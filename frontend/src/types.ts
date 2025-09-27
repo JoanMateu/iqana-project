@@ -1,7 +1,7 @@
 export type Holding = {
   asset: string;
   amount: number;
-  value_eur?: number | null;
+  value_eur?: number | string | null;
 };
 
 export type HoldingsResponse = {
