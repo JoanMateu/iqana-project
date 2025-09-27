@@ -1,7 +1,7 @@
 import time 
 from typing import Optional, Dict, Any, List
 from app import schemas
-from app.settings import config
+from app.core.settings import settings
 
 _CACHE: dict[str, tuple[schemas.HoldingsResponse, int]] = {}
 
@@ -23,7 +23,7 @@ def get_cached_holdings() -> Optional[schemas.HoldingsResponse]:
     data, saved_at = _CACHE["holdings"]
     age = int(time.time()) - saved_at
 
-    if age > config.CACHE_TTL_SECONDS:
+    if age > settings.CACHE_TTL_SECONDS:
         _CACHE.pop("holdings", None)
         return None
 
