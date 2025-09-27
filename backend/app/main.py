@@ -1,7 +1,7 @@
 from decimal import Decimal
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
 from dotenv import load_dotenv
-from fastapi.middleware.cors import CORSMiddleware, Request
+from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 import json
 import logging
