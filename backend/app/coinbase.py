@@ -4,7 +4,7 @@ from app import schemas, cache
 import time
 from coinbase.rest import RESTClient
 from app.settings import config
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 #test execute ci cd
 client = RESTClient(api_key=config.COINBASE_API_KEY, api_secret=config.COINBASE_API_SECRET)
 
@@ -45,7 +45,7 @@ def fetch_holdings_coinbase() -> schemas.HoldingsResponse:
             try:
                 balance = Decimal(balance_info["value"])
                 currency = balance_info["currency"]
-            except (KeyError, ValueError):
+            except (KeyError, ValueError, InvalidOperation):
                 continue
 
             if balance <= 0:

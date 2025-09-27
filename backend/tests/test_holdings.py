@@ -59,6 +59,45 @@ def test_fetch_holdings_coinbase_fallback_to_cache(monkeypatch):
     assert resp.username == "cached_user"
     assert resp.data[0].asset == "BTC"
 
+
+
+def test_fetch_holdings_coinbase_happy_and_price_fail(monkeypatch):
+    import app.coinbase as cb
+
+    class FakeClient:
+        def get(self, path):
+            if path == "/v2/user":
+                return {"data": {"name": "Alice"}}
+            if path == "/v2/prices/ETH-EUR/spot":
+                return {"data": {"amount": "2000.00"}}
+
+            raise RuntimeError(f"unexpected GET {path}")
+
+        def get_accounts(self):
+            return {
+                "accounts": [
+                    {"available_balance": {"value": "50.00", "currency": "EUR"}},     # EUR direct
+                    {"available_balance": {"value": "1.2345", "currency": "ETH"}},    # no-EUR with price
+                    {"available_balance": {"value": "0.0000", "currency": "BTC"}},    # zero => ignore
+                    {"available_balance": None},                                       # None => ignore
+                    {"available_balance": {"value": "BAD", "currency": "X"}},          # Wrongly formatted => ignore
+                ]
+            }
+
+    monkeypatch.setattr(cb, "client", FakeClient())
+
+    resp = cb.fetch_holdings_coinbase()
+    assert resp.source == "live"
+    assert resp.username == "Alice"
+
+    by_asset = {h.asset: h for h in resp.data}
+    assert by_asset["EUR"].value_eur == Decimal("50.00")
+    assert by_asset["ETH"].amount == Decimal("1.2345")
+    assert by_asset["ETH"].value_eur == Decimal("2469.00")
+    assert "BTC" not in by_asset
+
+
+
 def test_holdings_bad_source_logs_and_500(client, caplog):
     with caplog.at_level("ERROR"):
         r = client.get("/holdings?source=no_source")
