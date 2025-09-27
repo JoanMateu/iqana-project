@@ -5,7 +5,7 @@ import time
 from coinbase.rest import RESTClient
 from app.settings import config
 from decimal import Decimal, ROUND_HALF_UP
-
+#test execute ci cd
 client = RESTClient(api_key=config.COINBASE_API_KEY, api_secret=config.COINBASE_API_SECRET)
 
 def fetch_holdings_mock() -> schemas.HoldingsResponse:

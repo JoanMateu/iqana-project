@@ -11,6 +11,7 @@ env/
 htmlcov/
 .pytest_cache/
 pytest_cache
+coverage/
 #sam
 .aws-sam/
 .aws-sam 
