@@ -10,4 +10,4 @@ export type HoldingsResponse = {
   timestamp: number | null;
   username?: string | null;
   
-};
+}; 

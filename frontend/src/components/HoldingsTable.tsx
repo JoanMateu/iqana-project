@@ -110,7 +110,7 @@ export default function HoldingsTable() {
                       {totalValue.toFixed(2)} €
                     </td>
                   </tr>
-                </tfoot>
+                </tfoot> 
               )}
             </table>
           </div>
