@@ -17,17 +17,6 @@ def fetch_holdings_mock() -> schemas.HoldingsResponse:
         Holding(asset="XRP", amount=Decimal("500.0000"), value_eur=Decimal("400.00")),
         Holding(asset="DOGE", amount=Decimal("10000.0000"), value_eur=Decimal("200.00")),
         Holding(asset="ADA", amount=Decimal("2000.0000"), value_eur=Decimal("100.00")),
-        Holding(asset="SOL", amount=Decimal("100.0000"), value_eur=Decimal("150.00")),
-        Holding(asset="DOT", amount=Decimal("300.0000"), value_eur=Decimal("90.00")),
-        Holding(asset="MATIC", amount=Decimal("400.0000"), value_eur=Decimal("80.00")),
-        Holding(asset="AVAX", amount=Decimal("50.0000"), value_eur=Decimal("75.00")),
-        Holding(asset="LINK", amount=Decimal("150.0000"), value_eur=Decimal("60.00")),
-        Holding(asset="UNI", amount=Decimal("120.0000"), value_eur=Decimal("50.00")),
-        Holding(asset="BCH", amount=Decimal("5.0000"), value_eur=Decimal("250.00")),
-        Holding(asset="XLM", amount=Decimal("800.0000"), value_eur=Decimal("40.00")),
-        Holding(asset="VET", amount=Decimal("10000.0000"), value_eur=Decimal("30.00")),
-        Holding(asset="FIL", amount=Decimal("20.0000"), value_eur=Decimal("25.00")),
-        Holding(asset="TRX", amount=Decimal("5000.0000"), value_eur=Decimal("20.00")),
         
 
     ]

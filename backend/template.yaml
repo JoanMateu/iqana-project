@@ -19,9 +19,11 @@ Resources:
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: !Sub "${AWS::StackName}-api"
       CodeUri: .
       Handler: app.main.handler
       Policies:
+      #Allows to write logs to CloudWatch
         - AWSLambdaBasicExecutionRole
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${CoinbaseSecretName}*
@@ -30,6 +32,7 @@ Resources:
           BACKEND_CORS_ORIGINS: "http://localhost:5173,https://d2u5ie2k7r9a0g.cloudfront.net"
           COINBASE_API_KEY: !Sub "{{resolve:secretsmanager:${CoinbaseSecretName}:SecretString:COINBASE_API_KEY}}"
           COINBASE_API_SECRET: !Sub "{{resolve:secretsmanager:${CoinbaseSecretName}:SecretString:COINBASE_API_SECRET}}"
+          LOG_LEVEL: "INFO"
       Events:
         RootAny:
           Type: HttpApi
@@ -41,6 +44,12 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
+
+  ApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-api"
+      RetentionInDays: 7
 
 Outputs:
   ApiUrl:
