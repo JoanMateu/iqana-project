@@ -22,8 +22,12 @@ The app is already deployed to CloudFront + S3. You can use it directly without 
 ```bash
 cd frontend
 npm install
+```
 
-echo "VITE_BACKEND_URL=https://tskgt62dgb.execute-api.eu-west-3.amazonaws.com" > .env.development
+Create a file named .env.development in the project root (same folder as vite.config.*) with the following content:
+VITE_BACKEND_URL=https://tskgt62dgb.execute-api.eu-west-3.amazonaws.com
 
+```bash
 npm run dev
 # Open http://localhost:5173
+```
