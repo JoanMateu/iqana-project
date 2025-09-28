@@ -100,7 +100,7 @@ export default function Documentation() {
 
       <div className="space-y-6 text-[15px] leading-relaxed">
         <section>
-          <h3 className="font-semibold mb-1">Backend — FastAPI</h3>
+          <h3 className="font-semibold mb-1">Backend — FastAPI - Python</h3>
           <ul className="list-disc list-inside space-y-1">
             <li>
               <strong>Fast to build, low boilerplate:</strong> concise routing and validation with Pydantic.
@@ -112,7 +112,7 @@ export default function Documentation() {
         </section>
 
         <section>
-          <h3 className="font-semibold mb-1">Frontend — React + TypeScript + Tailwind</h3>
+          <h3 className="font-semibold mb-1">Frontend — React + Vite + TypeScript + Tailwind</h3>
           <ul className="list-disc list-inside space-y-1">
             <li>
               <strong>TypeScript:</strong> type safety across API models (holdings).

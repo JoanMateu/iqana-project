@@ -35,8 +35,19 @@ export default function Header({ username }: HeaderProps) {
               pathname === "/docs" ? "text-[#6DEA7F]" : "text-gray-700"
             }`}
           >
-            Documentation
+            Architecture & Tools
           </Link>
+
+
+          <Link
+            to="/ops"
+            className={`hover:text-[#6DEA7F] transition ${
+              pathname === "/ops" ? "text-[#6DEA7F]" : "text-gray-700"
+            }`}
+          >
+            Operations & Observability
+          </Link>
+
 
           {username && (
             <div className="text-gray-600 text-xs border-l pl-4">
