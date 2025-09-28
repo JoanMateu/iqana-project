@@ -12,6 +12,8 @@ def test_holdings_mock_ok(client):
     assert all("asset" in h and "amount" in h for h in body["data"])
 
 def test_holdings_live_ok_mock(client, monkeypatch):
+    """Monkeypatch the Coinbase fetch to return a fake response."""
+
     import app.services.coinbase as cb
     # Simulate a response from Coinbase
     fake = schemas.HoldingsResponse(
@@ -35,6 +37,8 @@ def test_holdings_live_ok_mock(client, monkeypatch):
 
 
 def test_fetch_holdings_coinbase_fallback_to_cache(client, monkeypatch):
+    """Simulate a failure in the Coinbase client, expect fallback to cache."""
+    
     import app.services.coinbase as cb
     
     cached = schemas.HoldingsResponse(
@@ -64,6 +68,8 @@ def test_fetch_holdings_coinbase_fallback_to_cache(client, monkeypatch):
 
 
 def test_fetch_holdings_coinbase_happy_and_price_fail(monkeypatch):
+    """Simulate a working Coinbase client, but price fetch fails for one asset."""
+
     import app.services.coinbase as cb
 
     class FakeClient:
@@ -101,6 +107,7 @@ def test_fetch_holdings_coinbase_happy_and_price_fail(monkeypatch):
 
 
 def test_holdings_bad_source_logs_and_400(client, caplog):
+    """Request with a bad source, no cache => 400 and log."""
 
     cache.clear_cache_holdings()
     with caplog.at_level("ERROR"):

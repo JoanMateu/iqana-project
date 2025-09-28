@@ -8,6 +8,8 @@ _CACHE: dict[str, tuple[schemas.HoldingsResponse, int]] = {}
 
 
 def get_cached_holdings() -> Optional[schemas.HoldingsResponse]:
+    """Returns cached holdings if available and not expired, else None."""
+    
     if "holdings" not in _CACHE:
         return None
 

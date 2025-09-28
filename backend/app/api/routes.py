@@ -15,6 +15,12 @@ def health():
 
 @router.get("/holdings", response_model=schemas.HoldingsResponse)
 def get_holdings(source: str = "mock"):
+    """Fetch holdings from specified source: "mock", "cache", or "live".
+        Falls back to cache if live fetch fails and cache is available.
+        - mock: Returns mock data for testing.
+        - cache: Returns cached data if available, else empty response.
+        - live: Fetches live data from Coinbase, updates cache, falls back to cache on failure.
+        """
     try:
         if source == "mock":
             resp = coinbase.fetch_holdings_mock()

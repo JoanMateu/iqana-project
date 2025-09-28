@@ -5,6 +5,7 @@ from app.schemas import holdings
 from app.core.settings import settings
 
 def test_cache_ttl_expired(monkeypatch):
+    """Test that cached holdings expire after TTL."""
 
     resp = holdings.HoldingsResponse(
         source="live",

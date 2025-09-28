@@ -9,6 +9,8 @@ client = RESTClient(api_key=settings.COINBASE_API_KEY,
                     api_secret=settings.COINBASE_API_SECRET)
 
 def fetch_holdings_mock() -> schemas.HoldingsResponse:
+    """Returns mock holdings data for testing purposes."""
+
     holdings = [
         schemas.Holding(asset="BTC", amount=Decimal("0.0500"), value_eur=Decimal("1700.00")),
         schemas.Holding(asset="ETH", amount=Decimal("1.2000"), value_eur=Decimal("3000.00")),
@@ -23,6 +25,8 @@ def fetch_holdings_mock() -> schemas.HoldingsResponse:
     )
 
 def fetch_holdings_coinbase() -> schemas.HoldingsResponse:
+    """Fetches and returns holdings from Coinbase account. Also return Username if available."""
+    
     user_info = client.get("/v2/user")
     username = user_info["data"].get("name") or user_info["data"].get("username") or user_info["data"].get("email")
 

@@ -8,6 +8,8 @@ INTEGRATION = os.getenv("LIVE_TESTS") == "1"
 
 @pytest.mark.skipif(not INTEGRATION, reason="LIVE_TESTS not set")
 def test_coinbase_function_live(monkeypatch):
+    """Test the live Coinbase fetch function, with and without cache."""
+    
     monkeypatch.setattr(cache, "_CACHE", {})
 
     resp = cb.fetch_holdings_coinbase()
