@@ -26,11 +26,11 @@ export default function Documentation() {
       <h1 className="text-3xl font-bold mb-4">Technical Test — Overview</h1>
 
       <p className="text-[15px] leading-relaxed mb-4">
-        This project delivers a reliable, and resilient small, end-to-end solution with a lightweight <strong>backend API</strong>, 
-        a minimal <strong>React</strong> frontend, and a <strong>Coinbase connector</strong>, all deployed on 
-        <strong> AWS</strong> via infrastructure as code.
-        It fetches and returns a user's Coinbase holdings and—if the upstream call fails—
-        serves recent <strong>cached data</strong> to preserve responsiveness and user experience.
+        This project delivers a small, end-to-end solution with a lightweight <strong>backend API</strong>,
+        a minimal <strong>React</strong> frontend, and a <strong>Coinbase connector</strong>, all deployed on
+        <strong> AWS</strong> via infrastructure as code. The architecture is simple, reliable, and resilient:
+        it fetches and returns a user's Coinbase holdings and if the upstream call fails, serves recent
+        <strong> cached data</strong> to preserve responsiveness.
       </p>
 
       {/* ARCHITECTURE */}
