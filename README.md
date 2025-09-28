@@ -23,7 +23,6 @@ The app is already deployed to CloudFront + S3. You can use it directly without 
 cd frontend
 npm ci
 
-# Point the app to the deployed backend
 echo "VITE_BACKEND_URL=https://tskgt62dgb.execute-api.eu-west-3.amazonaws.com" > .env.development
 
 npm run dev
