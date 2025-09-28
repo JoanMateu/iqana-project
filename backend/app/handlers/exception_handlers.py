@@ -5,7 +5,6 @@ from app.core.errors import BadSourceError,BadSourceErrorNoCacheData
 def register_exception_handlers(app):
     @app.exception_handler(BadSourceError)
     async def bad_source_handler(request: Request, exc: BadSourceError):
-        # mantenemos el mismo formato que estabas usando en detail
         return JSONResponse(
             status_code=400,
             content={
