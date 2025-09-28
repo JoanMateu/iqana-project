@@ -1,12 +1,10 @@
 import os
 import pytest
 from decimal import Decimal
-import app.coinbase as cb
-from app import cache
+import app.services.coinbase as cb
+from app.core import cache
 
 INTEGRATION = os.getenv("LIVE_TESTS") == "1"
-
-pytestmark = pytest.mark.integration
 
 @pytest.mark.skipif(not INTEGRATION, reason="LIVE_TESTS not set")
 def test_coinbase_function_live(monkeypatch):

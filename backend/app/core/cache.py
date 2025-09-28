@@ -6,15 +6,6 @@ from app.core.settings import settings
 _CACHE: dict[str, tuple[schemas.HoldingsResponse, int]] = {}
 
 
-#### eg:
-# _CACHE = {
-#   "holdings": {
-#     "data": [ { "asset": "BTC", "amount": 0.05 }, { "asset": "ETH", "amount": 1.2 } ],
-#     "timestamp": 1727132345
-#   }
-# }
-###
-
 
 def get_cached_holdings() -> Optional[schemas.HoldingsResponse]:
     if "holdings" not in _CACHE:
@@ -31,3 +22,13 @@ def get_cached_holdings() -> Optional[schemas.HoldingsResponse]:
 
 def set_cache_holdings(data: schemas.HoldingsResponse) -> None:
     _CACHE["holdings"] = (data, int(time.time()))
+
+
+def clear_cache_holdings() -> None:
+    _CACHE.pop("holdings", None)
+
+
+def force_expire_cache_holdings() -> None:
+    if "holdings" in _CACHE:
+        data, _ = _CACHE["holdings"]
+        _CACHE["holdings"] = (data, int(time.time()) - settings.CACHE_TTL_SECONDS - 1)

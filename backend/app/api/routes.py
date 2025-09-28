@@ -1,9 +1,10 @@
 # app/api/routes.py
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from app import schemas
 from app.core.logging import log_info, log_error
 from app.core import cache
 from app.services import coinbase
+from app.core.errors import BadSourceError, BadSourceErrorNoCacheData
 
 router = APIRouter()
 
@@ -29,12 +30,16 @@ def get_holdings(source: str = "mock"):
             return resp
 
         log_error(router.logger, "holdings_bad_source", source=source) 
-        raise ValueError("Unsupported source")
+        raise BadSourceError(f"Unsupported source: {source}")
+    
     except Exception as e:
-        # fallback a cache
         cached = cache.get_cached_holdings()
         if cached:
-            log_error(router.logger, "holdings_error_but_cache", source=source, error=str(e))  
+            log_error(router.logger, "holdings_fallback_cache", source=source, error=str(e))
             return cached
-        log_error(router.logger, "holdings_error", source=source, error=str(e))  
+
+        log_error(router.logger, "holdings_no_cache_error", source=source, error=str(e))
+
+        if isinstance(e, BadSourceError):
+            raise BadSourceErrorNoCacheData(f"Unsupported source: {source}")
         raise

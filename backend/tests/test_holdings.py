@@ -1,10 +1,10 @@
 import json
 from decimal import Decimal
 from app import schemas
-import app.cache as cache
+import app.core.cache as cache
 
 def test_holdings_mock_ok(client):
-    r = client.get("/holdings?source=mock")
+    r = client.get("/api/holdings?source=mock")
     assert r.status_code == 200
     body = r.json()
     assert body["source"] == "mock"
@@ -12,7 +12,7 @@ def test_holdings_mock_ok(client):
     assert all("asset" in h and "amount" in h for h in body["data"])
 
 def test_holdings_live_ok_mock(client, monkeypatch):
-    import app.coinbase as cb
+    import app.services.coinbase as cb
     # Simulate a response from Coinbase
     fake = schemas.HoldingsResponse(
         source="live",
@@ -26,7 +26,7 @@ def test_holdings_live_ok_mock(client, monkeypatch):
     
     monkeypatch.setattr(cb, "fetch_holdings_coinbase", fake_fetch)
 
-    r = client.get("/holdings?source=live")
+    r = client.get("/api/holdings?source=live")
     assert r.status_code == 200
     body = r.json()
     assert body["source"] == "live"
@@ -34,8 +34,9 @@ def test_holdings_live_ok_mock(client, monkeypatch):
     assert body["data"][0]["asset"] == "ETH"
 
 
-def test_fetch_holdings_coinbase_fallback_to_cache(monkeypatch):
-    import app.coinbase as cb
+def test_fetch_holdings_coinbase_fallback_to_cache(client, monkeypatch):
+    import app.services.coinbase as cb
+    
     cached = schemas.HoldingsResponse(
         source="cache",
         data=[schemas.Holding(asset="BTC", amount=Decimal("0.50"), value_eur=Decimal("30000.00"))],
@@ -53,16 +54,17 @@ def test_fetch_holdings_coinbase_fallback_to_cache(monkeypatch):
 
     monkeypatch.setattr(cb, "client", ErrorClient())
 
-    resp = cb.fetch_holdings_coinbase()
-
-    assert resp.source == "cache"
-    assert resp.username == "cached_user"
-    assert resp.data[0].asset == "BTC"
+    r = client.get("/api/holdings?source=live")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["source"] == "cache"
+    assert body["username"] == "cached_user"
+    assert body["data"][0]["asset"] == "BTC"
 
 
 
 def test_fetch_holdings_coinbase_happy_and_price_fail(monkeypatch):
-    import app.coinbase as cb
+    import app.services.coinbase as cb
 
     class FakeClient:
         def get(self, path):
@@ -98,8 +100,16 @@ def test_fetch_holdings_coinbase_happy_and_price_fail(monkeypatch):
 
 
 
-def test_holdings_bad_source_logs_and_500(client, caplog):
+def test_holdings_bad_source_logs_and_400(client, caplog):
+
+    cache.clear_cache_holdings()
     with caplog.at_level("ERROR"):
-        r = client.get("/holdings?source=no_source")
-    assert r.status_code == 500  
+        r = client.get("/api/holdings?source=no_source")
+
+    assert r.status_code == 400
+
+    body = r.json()
+    assert body["detail"]["error_code"] == "NO_CACHE_DATA_AND_BAD_SOURCE"
+    assert "Unsupported source" in body["detail"]["message"]
+
     assert any("holdings_bad_source" in rec.message for rec in caplog.records)

@@ -6,10 +6,12 @@ from mangum import Mangum
 from app.core.settings import settings
 from app.core.logging import setup_logging, log_info, log_error
 from app.api.routes import router as api_router
+from app.handlers import register_exception_handlers
 
 logger = setup_logging()
 
 app = FastAPI(title=settings.PROJECT_NAME)
+register_exception_handlers(app)
 
 # inyectar logger al router (para usarlo dentro de routes.py)
 setattr(api_router, "logger", logger)
