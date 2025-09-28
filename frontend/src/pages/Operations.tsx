@@ -19,7 +19,7 @@ export default function Operations() {
         </ul>
       </section>
 
-      {/* RELIABILITY & ERROR HANDLING */}
+      {/* RELIABILITY & ERROR HANDLING  .*/}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Reliability & error handling</h2>
         <ul className="list-disc list-inside space-y-1 text-[15px]">
