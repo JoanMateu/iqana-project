@@ -48,7 +48,14 @@ export default function Header({ username }: HeaderProps) {
           >
             Operations & Observability
           </Link>
-
+          <Link
+            to="/next-steps"
+            className={`hover:text-[#6DEA7F] transition ${
+              pathname === "/next-steps" ? "text-[#6DEA7F]" : "text-gray-700"
+            }`}
+          >
+            Next Steps
+          </Link>
 
           {username && (
             <div className="text-gray-600 text-xs border-l pl-4">
