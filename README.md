@@ -21,7 +21,7 @@ The app is already deployed to CloudFront + S3. You can use it directly without 
 **Run locally**
 ```bash
 cd frontend
-npm ci
+npm install
 
 echo "VITE_BACKEND_URL=https://tskgt62dgb.execute-api.eu-west-3.amazonaws.com" > .env.development
 
